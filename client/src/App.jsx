@@ -19,7 +19,7 @@ const pageTitles = {
   "/auth": "Login / Signup | SkillSwap",
 };
 
-function AppWrapper() {
+function PageTitleUpdater({ userId }) {
   const location = useLocation();
 
   useEffect(() => {
@@ -27,16 +27,14 @@ function AppWrapper() {
 
     if (pageTitles[path]) {
       document.title = pageTitles[path];
-    } 
-    else if (path.startsWith("/profile")) {
+    } else if (path.startsWith("/profile")) {
       document.title = "Profile | SkillSwap";
-    } 
-    else {
+    } else {
       document.title = "SkillSwap";
     }
-  }, [location]);
+  }, [location, userId]);
 
-  return <AppContent />;
+  return null;
 }
 
 function AppContent() {
@@ -44,14 +42,26 @@ function AppContent() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setUserId(localStorage.getItem("userId"));
+    const storedUserId = localStorage.getItem("userId");
+    setUserId(storedUserId);
     setLoading(false);
+
+    const handleStorageChange = () => {
+      setUserId(localStorage.getItem("userId"));
+    };
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
   }, []);
 
-  if (loading) return null;
+  if (loading) return <div>Loading...</div>;
 
   return (
     <>
+      <PageTitleUpdater userId={userId} />
+
       {userId ? <Navbar /> : <PublicNavbar />}
 
       <Routes>
@@ -59,11 +69,21 @@ function AppContent() {
           path="/"
           element={userId ? <Navigate to="/dashboard" replace /> : <Home />}
         />
+
         {userId && <Route path="/dashboard" element={<DashboardHome />} />}
-        <Route path="/findconnection" element={<FindConnection />} />
+
+        {userId && <Route path="/findconnection" element={<FindConnection />} />}
+
         <Route path="/profile/:userId" element={<Profile />} />
-        <Route path="/chats" element={<Chats />} />
-        <Route path="/auth" element={<Auth />} />
+
+        {userId && <Route path="/chats" element={<Chats />} />}
+
+        <Route
+          path="/auth"
+          element={userId ? <Navigate to="/dashboard" replace /> : <Auth />}
+        />
+
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 
       <Footer />
@@ -74,8 +94,7 @@ function AppContent() {
 export default function App() {
   return (
     <Router>
-      <AppWrapper />
+      <AppContent />
     </Router>
   );
 }
-
