@@ -1,5 +1,6 @@
 export default function ChatSidebar({ chats, selectContact }) {
   const userId = localStorage.getItem("userId");
+  const API_URL = import.meta.env.VITE_API_URL;
 
   return (
     <div className="w-1/3 border-r bg-[#f8f9fa]">
@@ -27,10 +28,10 @@ export default function ChatSidebar({ chats, selectContact }) {
             >
               <img
                 src={
-                  otherUser.avatar
-                    ? `http://localhost:5000${otherUser.avatar}`
-                    : "https://via.placeholder.com/40"
-                }
+                otherUser.avatar
+                  ? `${API_URL}${otherUser.avatar}`
+                  : "https://via.placeholder.com/40"
+              }
                 className="w-10 h-10 rounded-full"
               />
               <div>
