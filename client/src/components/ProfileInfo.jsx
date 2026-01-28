@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+const API_URL = import.meta.env.VITE_API_URL; 
+
 export default function ProfileInfo() {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
@@ -16,7 +18,7 @@ export default function ProfileInfo() {
         const userId = localStorage.getItem("userId");
         if (!userId) return console.log("No userId found in localStorage.");
 
-        const response = await axios.get(`http://localhost:5000/api/profile/${userId}`);
+        const response = await axios.get(`${API_URL}/api/profile/${userId}`);
         const data = response.data;
 
         if (data?.user) {
@@ -44,11 +46,11 @@ export default function ProfileInfo() {
       const userId = localStorage.getItem("userId");
       if (!userId) return alert("User not found. Please log in again.");
 
-      await axios.put(`http://localhost:5000/api/profile/${userId}`, formData);
+      await axios.put(`${API_URL}/api/profile/${userId}`, formData);
       alert("Profile updated successfully!");
       setIsEditing(false);
     } catch (error) {
-      console.error(" Failed to update profile:", error);
+      console.error("Failed to update profile:", error);
       alert("Failed to update profile.");
     }
   };
@@ -56,15 +58,15 @@ export default function ProfileInfo() {
   return (
     <div className="flex flex-col items-center text-center px-6 py-6 bg-[rgb(222,233,240)]">
 
-{!formData.name ?( 
-  <h1 className="text-2xl font-bold text-[#1D3557] uppercase tracking-wide">Full Name </h1> 
-  ) : null} 
-  <h1 className="text-4xl font-bold text-[#1D3557]">{formData.name}</h1> 
+      {!formData.name ? (
+        <h1 className="text-2xl font-bold text-[#1D3557] uppercase tracking-wide">Full Name</h1>
+      ) : null}
+      <h1 className="text-4xl font-bold text-[#1D3557]">{formData.name}</h1>
 
-{!formData.role ?(
-   <h3 className="text-gray-600 text-lg mt-1 uppercase tracking-wide" > Role </h3>
-   ) : null}
-   <h3 className="text-gray-600 text-lg mt-1">{formData.role}</h3>
+      {!formData.role ? (
+        <h3 className="text-gray-600 text-lg mt-1 uppercase tracking-wide">Role</h3>
+      ) : null}
+      <h3 className="text-gray-600 text-lg mt-1">{formData.role}</h3>
 
       <button
         onClick={() => setIsEditing(true)}
@@ -76,8 +78,7 @@ export default function ProfileInfo() {
       <hr className="w-[80%] border-gray-300 my-8" />
 
       <div className="flex justify-around items-center w-full max-w-3xl text-gray-700">
-
-       <div className="text-center">
+        <div className="text-center">
           <p className="font-light text-[#1D3557]">Email</p>
           <p className="font-medium">{formData.email}</p>
         </div>
@@ -86,7 +87,6 @@ export default function ProfileInfo() {
           <p className="font-light text-[#1D3557]">Location</p>
           <p className="font-medium">{formData.location}</p>
         </div>
-
       </div>
 
       {isEditing && (
@@ -126,7 +126,6 @@ export default function ProfileInfo() {
                 onChange={handleChange}
                 className="w-full p-2 border rounded"
               />
-
 
               <div className="flex justify-end gap-3 mt-4">
                 <button
