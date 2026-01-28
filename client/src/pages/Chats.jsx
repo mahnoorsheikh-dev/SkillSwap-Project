@@ -4,6 +4,8 @@ import ChatSidebar from "../components/ChatSidebar";
 import ChatWindow from "../components/ChatWindow";
 import axios from "axios";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function Chats() {
   const location = useLocation();
   const [selectedContact, setSelectedContact] = useState(null);
@@ -23,7 +25,7 @@ export default function Chats() {
   }, [location.state]);
 
   const loadChats = async (id) => {
-    const res = await axios.get(`http://localhost:5000/api/chats/${id}`);
+    const res = await axios.get(`${API_URL}/api/chats/${id}`);
     setChats(res.data);
   };
 
