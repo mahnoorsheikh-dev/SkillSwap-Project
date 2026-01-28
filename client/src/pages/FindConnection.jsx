@@ -3,6 +3,8 @@ import axios from "axios";
 import SearchBar from "../components/FindConnectionSearchBar";
 import UserCard from "../components/FindConnectionUserCard";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function FindConnection() {
   const [search, setSearch] = useState("");
   const [users, setUsers] = useState([]);
@@ -11,7 +13,7 @@ export default function FindConnection() {
     const fetchUsers = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/profile?search=${search}`
+          `${API_URL}/api/profile?search=${search}`
         );
         setUsers(res.data.users);
       } catch (err) {
