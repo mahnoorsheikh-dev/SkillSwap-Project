@@ -4,6 +4,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function AuthPage() {
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
@@ -45,9 +47,8 @@ export default function AuthPage() {
   const onSubmit = async (data) => {
     try {
       const endpoint = isLogin
-        ? "http://localhost:5000/api/auth/login"
-        : "http://localhost:5000/api/auth/signup";
-
+          ? `${API_URL}/api/auth/login`
+          : `${API_URL}/api/auth/signup`;
       const userData = { ...data };
       if (!isLogin) delete userData.confirmPassword;
 
