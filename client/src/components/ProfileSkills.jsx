@@ -1,19 +1,21 @@
 import { useState, useEffect } from "react";
 import { Edit3, Save } from "lucide-react";
 
+const API_URL = import.meta.env.VITE_API_URL; 
+
 export default function ProfileSkills() {
   const [skillsOffered, setSkillsOffered] = useState([]);
   const [skillsWanted, setSkillsWanted] = useState([]);
   const [skillsInput, setSkillsInput] = useState("");
   const [isSaved, setIsSaved] = useState(false);
-  const [selectedType, setSelectedType] = useState("offered"); // offered | wanted
+  const [selectedType, setSelectedType] = useState("offered"); 
 
   const userId = localStorage.getItem("userId");
 
   useEffect(() => {
     const fetchSkills = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/profile/${userId}`);
+        const res = await fetch(`${API_URL}/api/profile/${userId}`);
         const data = await res.json();
         if (data.user) {
           setSkillsOffered(data.user.skillsOffered || []);
@@ -42,7 +44,7 @@ export default function ProfileSkills() {
           ? { skillsOffered: skillList }
           : { skillsWanted: skillList };
 
-      const res = await fetch(`http://localhost:5000/api/profile/${userId}`, {
+      const res = await fetch(`${API_URL}/api/profile/${userId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
