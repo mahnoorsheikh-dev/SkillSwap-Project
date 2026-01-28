@@ -4,6 +4,8 @@ import ChatMessage from "./ChatMessage";
 import socket from "../socket";
 import axios from "axios";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function ChatWindow({ selectedContact }) {
   const [messages, setMessages] = useState([]);
   const [newMsg, setNewMsg] = useState("");
@@ -16,9 +18,7 @@ export default function ChatWindow({ selectedContact }) {
     if (!chatId) return;
 
     const loadMessages = async () => {
-      const res = await axios.get(
-        `http://localhost:5000/api/messages/${chatId}`
-      );
+      const res = await axios.get(`${API_URL}/api/messages/${chatId}`);
       setMessages(res.data);
     };
 
@@ -58,7 +58,7 @@ export default function ChatWindow({ selectedContact }) {
       text: newMsg,
     };
 
-    const res = await axios.post("http://localhost:5000/api/messages", msgData);
+  const res = await axios.post(`${API_URL}/api/messages`, msgData);
 
     socket.emit("send_message", res.data);
     setMessages((prev) => [...prev, res.data]);
@@ -71,13 +71,14 @@ export default function ChatWindow({ selectedContact }) {
       <div className="flex items-center justify-between border-b p-4 bg-[#fdfdfd]">
         <div className="flex items-center gap-3">
           <img
-            src={
-              selectedContact.avatar
-                ? `http://localhost:5000${selectedContact.avatar}`
-                : "https://via.placeholder.com/150"
-            }
-            className="w-12 h-12 rounded-full"
+                src={
+                  selectedContact.avatar
+                    ? `${API_URL}${selectedContact.avatar}`
+                    : "https://via.placeholder.com/150"
+                }
+                className="w-12 h-12 rounded-full"
           />
+
           <div>
             <h2 className="font-bold text-[#1D3557]">
               {selectedContact.name}
@@ -102,12 +103,13 @@ export default function ChatWindow({ selectedContact }) {
             text={msg.text}
             sender={msg.sender}
             avatar={
-              msg.sender === userId
-                ? "https://via.placeholder.com/40/457B9D"
-                : selectedContact.avatar
-                ? `http://localhost:5000${selectedContact.avatar}`
-                : "https://via.placeholder.com/40"
-            }
+                  msg.sender === userId
+                    ? "https://via.placeholder.com/40/457B9D"
+                    : selectedContact.avatar
+                    ? `${API_URL}${selectedContact.avatar}`
+                    : "https://via.placeholder.com/40"
+                }
+
             isOwn={msg.sender === userId}
           />
         ))}
