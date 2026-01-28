@@ -1,6 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function ProfileHeader({ userId }) {
   const [avatar, setAvatar] = useState(null);
   const fileInputRef = useRef(null);
@@ -9,9 +11,9 @@ export default function ProfileHeader({ userId }) {
     const fetchAvatar = async () => {
       if (!userId) return;
       try {
-        const response = await axios.get(`http://localhost:5000/api/profile/${userId}`);
+        const response = await axios.get(`${API_URL}/api/profile/${userId}`);
         if (response.data?.user?.avatar) {
-          setAvatar(`http://localhost:5000${response.data.user.avatar}`);
+          setAvatar(`${API_URL}${response.data.user.avatar}`);
         }
       } catch (error) {
         console.log("Error fetching avatar:", error);
@@ -34,16 +36,16 @@ export default function ProfileHeader({ userId }) {
     formData.append("avatar", file);
 
     try {
-      const res = await axios.put(`http://localhost:5000/api/profile/${userId}`, formData, {
+      const res = await axios.put(`${API_URL}/api/profile/${userId}`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
       if (res.data?.user?.avatar) {
-        setAvatar(`http://localhost:5000${res.data.user.avatar}`);
-        console.log("✅ Avatar updated successfully");
+        setAvatar(`${API_URL}${res.data.user.avatar}`);
+        console.log(" Avatar updated successfully");
       }
     } catch (error) {
-      console.error("❌ Error uploading avatar:", error);
+      console.error("Error uploading avatar:", error);
     }
   };
 
