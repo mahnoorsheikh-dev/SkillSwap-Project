@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Save, Edit3 } from "lucide-react";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function ProfileAbout({ userId: propUserId }) {
   const [about, setAbout] = useState("");
   const [isSaved, setIsSaved] = useState(false);
@@ -11,7 +13,7 @@ export default function ProfileAbout({ userId: propUserId }) {
 
     const fetchAbout = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/profile/${userId}`);
+        const res = await fetch(`${API_URL}/api/profile/${userId}`);
         const data = await res.json();
 
         if (data?.user?.about) {
@@ -19,7 +21,7 @@ export default function ProfileAbout({ userId: propUserId }) {
           setIsSaved(true);
         }
       } catch (err) {
-        console.error("❌ Error fetching about:", err);
+        console.error(" Error fetching about:", err);
       }
     };
 
@@ -30,20 +32,20 @@ export default function ProfileAbout({ userId: propUserId }) {
     if (!about.trim()) return;
 
     try {
-      const res = await fetch(`http://localhost:5000/api/profile/${userId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ about }),
+      const res = await fetch(`${API_URL}/api/profile/${userId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ about }),
       });
 
       if (res.ok) {
         setIsSaved(true);
         console.log(" About saved successfully");
       } else {
-        console.error("❌ Failed to save about");
+        console.error("Failed to save about");
       }
     } catch (err) {
-      console.error("❌ Error saving about:", err);
+      console.error("Error saving about:", err);
     }
   };
 
