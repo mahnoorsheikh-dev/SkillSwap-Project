@@ -3,7 +3,7 @@ import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-export default function FindConnectionUserCard({ user, reloadChats }) {
+export default function FindConnectionUserCard({ user }) {
   const handleConnect = async () => {
     const loggedInUser = localStorage.getItem("userId");
 
@@ -18,7 +18,6 @@ export default function FindConnectionUserCard({ user, reloadChats }) {
         user2: user._id,
       });
 
-      reloadChats();
       alert("Chat Created!");
     } catch (error) {
       console.log(error);

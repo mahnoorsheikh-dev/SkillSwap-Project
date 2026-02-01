@@ -1,12 +1,12 @@
 export default function ChatMessage({ text, sender, avatar, isOwn }) {
-  const isUser = isOwn; 
+  const isUser = isOwn;
 
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"} mb-3`}>
       {!isUser && (
         <img
           src={avatar}
-          alt={sender}
+          alt={sender?.name || "User"}
           className="w-10 h-10 rounded-full mr-2"
         />
       )}

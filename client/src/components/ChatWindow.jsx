@@ -58,11 +58,10 @@ export default function ChatWindow({ selectedContact }) {
       text: newMsg,
     };
 
-  const res = await axios.post(`${API_URL}/api/messages`, msgData);
+    const res = await axios.post(`${API_URL}/api/messages`, msgData);
 
     socket.emit("send_message", res.data);
     setMessages((prev) => [...prev, res.data]);
-
     setNewMsg("");
   };
 
@@ -71,21 +70,17 @@ export default function ChatWindow({ selectedContact }) {
       <div className="flex items-center justify-between border-b p-4 bg-[#fdfdfd]">
         <div className="flex items-center gap-3">
           <img
-                src={
-                  selectedContact.avatar
-                    ? `${API_URL}${selectedContact.avatar}`
-                    : "https://via.placeholder.com/150"
-                }
-                className="w-12 h-12 rounded-full"
+            src={
+              selectedContact.avatar
+                ? `${API_URL}${selectedContact.avatar}`
+                : "https://via.placeholder.com/150"
+            }
+            className="w-12 h-12 rounded-full"
           />
 
           <div>
-            <h2 className="font-bold text-[#1D3557]">
-              {selectedContact.name}
-            </h2>
-            <p className="text-sm text-green-500">
-              ● Active Now
-            </p>
+            <h2 className="font-bold text-[#1D3557]">{selectedContact.name}</h2>
+            <p className="text-sm text-green-500">● Active Now</p>
           </div>
         </div>
 
@@ -103,14 +98,13 @@ export default function ChatWindow({ selectedContact }) {
             text={msg.text}
             sender={msg.sender}
             avatar={
-                  msg.sender === userId
-                    ? "https://via.placeholder.com/40/457B9D"
-                    : selectedContact.avatar
-                    ? `${API_URL}${selectedContact.avatar}`
-                    : "https://via.placeholder.com/40"
-                }
-
-            isOwn={msg.sender === userId}
+              msg.sender?._id === userId
+                ? "https://via.placeholder.com/40/457B9D"
+                : selectedContact.avatar
+                ? `${API_URL}${selectedContact.avatar}`
+                : "https://via.placeholder.com/40"
+            }
+            isOwn={msg.sender?._id === userId} 
           />
         ))}
         <div ref={endRef} />
