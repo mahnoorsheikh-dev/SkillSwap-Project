@@ -12,11 +12,12 @@ export default function Chats() {
   const [chats, setChats] = useState([]);
   const [userId, setUserId] = useState("");
 
-  useEffect(() => {
-    const id = localStorage.getItem("userId");
-    setUserId(id);
-    loadChats(id);
-  }, []);
+ useEffect(() => {
+  const id = localStorage.getItem("userId");
+  setUserId(id);
+  loadChats(id);
+}, [loadChats]); 
+
 
   useEffect(() => {
     if (location.state?.selectedContact) {
@@ -24,16 +25,39 @@ export default function Chats() {
     }
   }, [location.state]);
 
+  // Function to load chats (can be called after creating a chat)
   const loadChats = async (id) => {
-    const res = await axios.get(`${API_URL}/api/chats/${id}`);
-    setChats(res.data);
+    try {
+      const res = await axios.get(`${API_URL}/api/chats/${id}`);
+      setChats(res.data);
+
+      // If no selectedContact yet, select the first chat automatically
+      if (!selectedContact && res.data.length > 0) {
+        const otherUser = res.data[0].users.find(u => u._id !== id);
+        setSelectedContact({
+          chatId: res.data[0]._id,
+          _id: otherUser._id,
+          name: otherUser.name,
+          avatar: otherUser.avatar,
+        });
+      }
+    } catch (err) {
+      console.error("Failed to load chats:", err);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gray-100 py-8 px-6 font-inter">
       <div className="max-w-6xl mx-auto bg-white shadow-xl rounded-2xl overflow-hidden flex h-[85vh] border">
-        <ChatSidebar chats={chats} selectContact={setSelectedContact} />
-        <ChatWindow selectedContact={selectedContact} reloadChats={() => loadChats(userId)} />
+        <ChatSidebar
+          chats={chats}
+          selectContact={setSelectedContact}
+          userId={userId}
+        />
+        <ChatWindow
+          selectedContact={selectedContact}
+          reloadChats={() => loadChats(userId)}
+        />
       </div>
     </div>
   );

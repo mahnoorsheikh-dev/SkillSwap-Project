@@ -3,7 +3,7 @@ import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-export default function FindConnectionUserCard({ user }) {
+export default function FindConnectionUserCard({ user, reloadChats }) {
   const handleConnect = async () => {
     const loggedInUser = localStorage.getItem("userId");
 
@@ -13,12 +13,13 @@ export default function FindConnectionUserCard({ user }) {
     }
 
     try {
-      await axios.post(`${API_URL}/api/chats`, {
+      const res = await axios.post(`${API_URL}/api/chats`, {
         user1: loggedInUser,
         user2: user._id,
       });
 
       alert("Chat Created!");
+      reloadChats(); // ✅ refresh chats immediately
     } catch (error) {
       console.log(error);
       alert("Failed to create chat!");
