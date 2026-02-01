@@ -13,13 +13,15 @@ export default function FindConnectionUserCard({ user, reloadChats }) {
     }
 
     try {
-      const res = await axios.post(`${API_URL}/api/chats`, {
-        user1: loggedInUser,
-        user2: user._id,
-      });
+      await axios.post(`${API_URL}/api/chats`, 
+        { 
+          user1: loggedInUser,
+          user2: user._id 
+        });
+
 
       alert("Chat Created!");
-      reloadChats(); // ✅ refresh chats immediately
+      reloadChats(); 
     } catch (error) {
       console.log(error);
       alert("Failed to create chat!");

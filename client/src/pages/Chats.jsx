@@ -12,12 +12,32 @@ export default function Chats() {
   const [chats, setChats] = useState([]);
   const [userId, setUserId] = useState("");
 
- useEffect(() => {
-  const id = localStorage.getItem("userId");
-  setUserId(id);
-  loadChats(id);
-}, [loadChats]); 
+  useEffect(() => {
+    const id = localStorage.getItem("userId");
+    setUserId(id);
 
+    const loadChats = async () => {
+      try {
+        const res = await axios.get(`${API_URL}/api/chats/${id}`);
+        setChats(res.data);
+
+        if (!selectedContact && res.data.length > 0) {
+          const otherUser = res.data[0].users.find(u => u._id !== id);
+          setSelectedContact({
+            chatId: res.data[0]._id,
+            _id: otherUser._id,
+            name: otherUser.name,
+            avatar: otherUser.avatar,
+          });
+        }
+      } catch (err) {
+        console.error("Failed to load chats:", err);
+      }
+    };
+
+    loadChats();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); 
 
   useEffect(() => {
     if (location.state?.selectedContact) {
@@ -25,24 +45,13 @@ export default function Chats() {
     }
   }, [location.state]);
 
-  // Function to load chats (can be called after creating a chat)
-  const loadChats = async (id) => {
+  const reloadChats = async () => {
+    const id = localStorage.getItem("userId");
     try {
       const res = await axios.get(`${API_URL}/api/chats/${id}`);
       setChats(res.data);
-
-      // If no selectedContact yet, select the first chat automatically
-      if (!selectedContact && res.data.length > 0) {
-        const otherUser = res.data[0].users.find(u => u._id !== id);
-        setSelectedContact({
-          chatId: res.data[0]._id,
-          _id: otherUser._id,
-          name: otherUser.name,
-          avatar: otherUser.avatar,
-        });
-      }
     } catch (err) {
-      console.error("Failed to load chats:", err);
+      console.error("Failed to reload chats:", err);
     }
   };
 
@@ -56,7 +65,7 @@ export default function Chats() {
         />
         <ChatWindow
           selectedContact={selectedContact}
-          reloadChats={() => loadChats(userId)}
+          reloadChats={reloadChats}
         />
       </div>
     </div>
