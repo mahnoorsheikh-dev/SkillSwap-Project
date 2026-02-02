@@ -13,17 +13,15 @@ export default function FindConnectionUserCard({ user, reloadChats }) {
     }
 
     try {
-      await axios.post(`${API_URL}/api/chats`, 
-        { 
-          user1: loggedInUser,
-          user2: user._id 
-        });
-
+      await axios.post(`${API_URL}/api/chats`, {
+        user1: loggedInUser,
+        user2: user._id,
+      });
 
       alert("Chat Created!");
       reloadChats(); 
     } catch (error) {
-      console.log(error);
+      console.error("Chat creation error:", error);
       alert("Failed to create chat!");
     }
   };
@@ -31,7 +29,7 @@ export default function FindConnectionUserCard({ user, reloadChats }) {
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center text-center hover:shadow-xl transition">
       <img
-        src={user.avatar ? `${API_URL}${user.avatar}` : "https://via.placeholder.com/150"}
+        src={user.avatar ? `${API_URL}/uploads/${user.avatar}` : "https://via.placeholder.com/150"}
         alt={user.name}
         className="w-20 h-20 rounded-full mb-4 object-cover"
       />

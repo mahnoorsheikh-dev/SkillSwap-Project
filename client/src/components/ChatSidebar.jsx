@@ -30,7 +30,7 @@ export default function ChatSidebar({ chats, selectContact, userId }) {
               <img
                 src={
                   otherUser.avatar
-                    ? `${API_URL}${otherUser.avatar}`
+                    ? `${API_URL}/uploads/${otherUser.avatar}`
                     : "https://via.placeholder.com/40"
                 }
                 className="w-10 h-10 rounded-full"

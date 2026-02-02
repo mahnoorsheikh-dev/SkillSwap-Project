@@ -15,29 +15,9 @@ export default function Chats() {
   useEffect(() => {
     const id = localStorage.getItem("userId");
     setUserId(id);
-
-    const loadChats = async () => {
-      try {
-        const res = await axios.get(`${API_URL}/api/chats/${id}`);
-        setChats(res.data);
-
-        if (!selectedContact && res.data.length > 0) {
-          const otherUser = res.data[0].users.find(u => u._id !== id);
-          setSelectedContact({
-            chatId: res.data[0]._id,
-            _id: otherUser._id,
-            name: otherUser.name,
-            avatar: otherUser.avatar,
-          });
-        }
-      } catch (err) {
-        console.error("Failed to load chats:", err);
-      }
-    };
-
-    loadChats();
+    loadChats(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); 
+  }, []);
 
   useEffect(() => {
     if (location.state?.selectedContact) {
@@ -45,13 +25,24 @@ export default function Chats() {
     }
   }, [location.state]);
 
-  const reloadChats = async () => {
-    const id = localStorage.getItem("userId");
+  const loadChats = async (id) => {
     try {
       const res = await axios.get(`${API_URL}/api/chats/${id}`);
       setChats(res.data);
+
+      if (!selectedContact && res.data.length > 0) {
+        const otherUser = res.data[0].users.find(u => u._id !== id);
+        if (otherUser) {
+          setSelectedContact({
+            chatId: res.data[0]._id,
+            _id: otherUser._id,
+            name: otherUser.name,
+            avatar: otherUser.avatar,
+          });
+        }
+      }
     } catch (err) {
-      console.error("Failed to reload chats:", err);
+      console.error("Failed to load chats:", err);
     }
   };
 
@@ -65,7 +56,7 @@ export default function Chats() {
         />
         <ChatWindow
           selectedContact={selectedContact}
-          reloadChats={reloadChats}
+          reloadChats={() => loadChats(userId)} 
         />
       </div>
     </div>

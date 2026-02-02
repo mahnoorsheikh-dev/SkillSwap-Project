@@ -18,8 +18,12 @@ export default function ChatWindow({ selectedContact }) {
     if (!chatId) return;
 
     const loadMessages = async () => {
-      const res = await axios.get(`${API_URL}/api/messages/${chatId}`);
-      setMessages(res.data);
+      try {
+        const res = await axios.get(`${API_URL}/api/messages/${chatId}`);
+        setMessages(res.data);
+      } catch (err) {
+        console.error("Failed to load messages:", err);
+      }
     };
 
     loadMessages();
@@ -58,11 +62,14 @@ export default function ChatWindow({ selectedContact }) {
       text: newMsg,
     };
 
-    const res = await axios.post(`${API_URL}/api/messages`, msgData);
-
-    socket.emit("send_message", res.data);
-    setMessages((prev) => [...prev, res.data]);
-    setNewMsg("");
+    try {
+      const res = await axios.post(`${API_URL}/api/messages`, msgData);
+      socket.emit("send_message", res.data);
+      setMessages((prev) => [...prev, res.data]);
+      setNewMsg("");
+    } catch (err) {
+      console.error("Failed to send message:", err);
+    }
   };
 
   return (
@@ -72,7 +79,7 @@ export default function ChatWindow({ selectedContact }) {
           <img
             src={
               selectedContact.avatar
-                ? `${API_URL}${selectedContact.avatar}`
+                ? `${API_URL}/uploads/${selectedContact.avatar}`
                 : "https://via.placeholder.com/150"
             }
             className="w-12 h-12 rounded-full"
@@ -101,7 +108,7 @@ export default function ChatWindow({ selectedContact }) {
               msg.sender?._id === userId
                 ? "https://via.placeholder.com/40/457B9D"
                 : selectedContact.avatar
-                ? `${API_URL}${selectedContact.avatar}`
+                ? `${API_URL}/uploads/${selectedContact.avatar}`
                 : "https://via.placeholder.com/40"
             }
             isOwn={msg.sender?._id === userId} 
