@@ -5,24 +5,23 @@ import UserCard from "../components/FindConnectionUserCard";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-export default function FindConnection() {
+export default function FindConnection({ reloadChats }) {
   const [search, setSearch] = useState("");
   const [users, setUsers] = useState([]);
 
+  // Fetch users whenever search changes
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axios.get(
-          `${API_URL}/api/profile?search=${search}`
-        );
-        setUsers(res.data.users);
+        const res = await axios.get(`${API_URL}/api/profile?search=${search}`);
+        setUsers(res.data.users || []);
       } catch (err) {
         console.error("Error fetching profiles:", err);
       }
     };
 
     fetchUsers();
-  }, [search]); 
+  }, [search]);
 
   return (
     <div className="min-h-screen bg-gray-50 py-10 px-4">
@@ -35,7 +34,10 @@ export default function FindConnection() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {users.length > 0 ? (
-            users.map((user) => <UserCard key={user._id} user={user} />)
+            users.map((user) => (
+              // ✅ Pass reloadChats from parent to each UserCard
+              <UserCard key={user._id} user={user} reloadChats={reloadChats} />
+            ))
           ) : (
             <p className="text-center text-gray-500 col-span-full">
               No connections found.

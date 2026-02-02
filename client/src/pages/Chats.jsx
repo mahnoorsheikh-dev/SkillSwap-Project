@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import ChatSidebar from "../components/ChatSidebar";
 import ChatWindow from "../components/ChatWindow";
+import FindConnection from "./FindConnection"; // ✅ import FindConnection
 import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -12,6 +13,7 @@ export default function Chats() {
   const [chats, setChats] = useState([]);
   const [userId, setUserId] = useState("");
 
+  // Load userId and chats
   useEffect(() => {
     const id = localStorage.getItem("userId");
     setUserId(id);
@@ -19,17 +21,20 @@ export default function Chats() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Handle selected chat from navigation
   useEffect(() => {
     if (location.state?.selectedContact) {
       setSelectedContact(location.state.selectedContact);
     }
   }, [location.state]);
 
+  // Function to load chats
   const loadChats = async (id) => {
     try {
       const res = await axios.get(`${API_URL}/api/chats/${id}`);
       setChats(res.data);
 
+      // Select first chat automatically if nothing selected
       if (!selectedContact && res.data.length > 0) {
         const otherUser = res.data[0].users.find(u => u._id !== id);
         if (otherUser) {
@@ -49,15 +54,21 @@ export default function Chats() {
   return (
     <div className="min-h-screen bg-gray-100 py-8 px-6 font-inter">
       <div className="max-w-6xl mx-auto bg-white shadow-xl rounded-2xl overflow-hidden flex h-[85vh] border">
+        {/* Chat Sidebar */}
         <ChatSidebar
           chats={chats}
           selectContact={setSelectedContact}
           userId={userId}
         />
+
+        {/* Chat Window */}
         <ChatWindow
           selectedContact={selectedContact}
           reloadChats={() => loadChats(userId)} 
         />
+
+        {/* Find Connections Section */}
+        <FindConnection reloadChats={() => loadChats(userId)} /> 
       </div>
     </div>
   );
