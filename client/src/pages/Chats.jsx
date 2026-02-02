@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import ChatSidebar from "../components/ChatSidebar";
 import ChatWindow from "../components/ChatWindow";
-import FindConnection from "./FindConnection"; 
 import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -60,8 +59,6 @@ export default function Chats() {
           selectedContact={selectedContact}
           reloadChats={() => loadChats(userId)} 
         />
-
-        <FindConnection reloadChats={() => loadChats(userId)} /> 
       </div>
     </div>
   );
