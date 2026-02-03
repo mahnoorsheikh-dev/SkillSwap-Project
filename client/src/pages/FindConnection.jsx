@@ -9,7 +9,6 @@ export default function FindConnection({ reloadChats }) {
   const [search, setSearch] = useState("");
   const [users, setUsers] = useState([]);
 
-  // Fetch users whenever search changes
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -35,7 +34,6 @@ export default function FindConnection({ reloadChats }) {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {users.length > 0 ? (
             users.map((user) => (
-              // ✅ Pass reloadChats from parent to each UserCard
               <UserCard key={user._id} user={user} reloadChats={reloadChats} />
             ))
           ) : (
